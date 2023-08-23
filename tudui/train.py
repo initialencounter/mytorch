@@ -1,12 +1,10 @@
 
 
 from torch.utils.tensorboard import SummaryWriter
-import torch_directml
-device = torch_directml.device()
-# from zowo import Zowo
+from zowo import Zowo
 from torch import nn
 import torch
-
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 import torchvision
 # 下载训练数据集
 datasets_train = torchvision.datasets.CIFAR10("./data/CIFAR10/train",
@@ -54,6 +52,8 @@ for i in range(start_epcho, end_epcho):
     zowo.train()
     for data in dataloader_train:
         img, targets = data
+        img = img.to(device)
+        targets = targets.to(device)
         output = zowo(img)
         loss = loss_fn(output, targets)
 
@@ -74,6 +74,8 @@ for i in range(start_epcho, end_epcho):
     with torch.no_grad():
         for data in dataloader_test:
             img, targets = data
+            img = img.to(device)
+            targets = targets.to(device)
             output = zowo(img)
             loss = loss_fn(output, targets)
 
